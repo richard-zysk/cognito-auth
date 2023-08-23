@@ -1,0 +1,25 @@
+# Base Image - Use an official lightweight Node.js image.
+# Use an image with alpine as it is small in size and secured.
+FROM node:16-alpine
+
+# Set the working directory
+WORKDIR /src/
+
+# Copy package.json and package-lock.json before other files
+# Utilize Docker cache to save re-installing dependencies if unchanged
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --force
+
+# Copy all files
+COPY . .
+
+# Build the application
+RUN npm run build:auth
+
+# Start the application
+CMD [ "npm", "run", "auth" ]
+
+# Expose the port
+EXPOSE 3004
